@@ -10,7 +10,7 @@ phases:
       - apt-get install -y maven > /dev/null
       - snyk config set api=$SnykToken
       - aws --version
-      - pip3 install awscli --upgrade --user | grep awscli
+      # - pip3 install awscli --upgrade --user | grep awscli
   pre_build:
     commands:
       - echo Entered the pre_build phase...
@@ -20,6 +20,8 @@ phases:
       - echo "{\"URL\"zz \"${snykurl}\"}" | sed "s/zz/:/g" > payload.json
       # - echo "{\"URL\": \"${snykurl}\"}" > payload.json
       - cat payload.json
+      - base64 payload.json
+      - echo $LambdaName
       - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json)  response.json
       - echo DeploymentBucket is $DeploymentBucket
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
