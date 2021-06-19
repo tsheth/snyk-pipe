@@ -16,7 +16,8 @@ phases:
       - echo Entered the pre_build phase...
       # - snyk monitor --all-projects
       - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
-      - echo $snykurl | sed "s/ /\n/g" > payload.json
+      # - echo $snykurl | sed "s/ /\n/g" > payload.json
+      - echo "{\"URL\"zz \"${snykurl}\"} | sed "s/zz/:/g" > payload.json
       - cat payload.json
       - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json)  response.json
       - echo DeploymentBucket is $DeploymentBucket
