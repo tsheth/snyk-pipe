@@ -5,11 +5,12 @@ phases:
       nodejs: 12
     commands:
       - echo Entered the install phase...
-      - apt update
-      - npm install -g snyk
-      - apt-get install -y maven
-      - echo Authenticate snyk using token, First generate token, tejas bitbucket snyk account token
+      - apt update  > /dev/null
+      - npm install -g snyk > /dev/null
+      - apt-get install -y maven > /dev/null
       - snyk config set api=$SnykToken
+      - aws --version
+      - pip3 install awscli --upgrade --user 
   pre_build:
     commands:
       - echo Entered the pre_build phase...
@@ -29,7 +30,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      -  mvn -s settings.xml -Dmaven.test.failure.ignore=true clean package deploy
+      -  mvn -s settings.xml -Dmaven.test.failure.ignore=true clean package deploy > /dev/null
   post_build:
     commands:
       - echo Entered the post_build phase...
