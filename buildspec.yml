@@ -13,7 +13,11 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
-      - snyk monitor --all-projects
+      # - snyk monitor --all-projects
+      - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
+      - echo $snykurl | sed "s/ /\n/g" > payload.json
+      - cat payload.json
+      - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json)  response.json
       - echo DeploymentBucket is $DeploymentBucket
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}')  --repository $(echo $CodeArtifactRepository | awk -F'/' '{print $3}') --format maven --query 'repositoryEndpoint' --output text)
@@ -21,16 +25,14 @@ phases:
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}') --query authorizationToken --output text`
       # - echo "CODEARTIFACT_TOKEN is $CODEARTIFACT_TOKEN"
       - snyk test --all-projects || echo vulnerabilities found
-      # - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
   build:
     commands:
       - echo Entered the build phase...
-      - echo Build started on 'date'
+      - echo Build started on `date`
       -  mvn -s settings.xml -Dmaven.test.failure.ignore=true clean package deploy
   post_build:
     commands:
       - echo Entered the post_build phase...
-      # - echo $snykurl | sed "s# #\n#g"
       - echo Build completed on `date`
 artifacts:  
   files:  
