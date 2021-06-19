@@ -26,7 +26,7 @@ phases:
       # - aws lambda invoke --function-name ${LambdaName} --payload ${payload}  response.json
       - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json -w 10000)  response.json
       - echo $SNSTopicArn
-      - aws sns publish --topic-arn ${SNSTopicArn} --subject Snyk Dashboard URL --message ${snykurl}
+      - aws sns publish --topic-arn ${SNSTopicArn} --subject "Snyk Dashboard URL" --message ${snykurl}
       - echo Entered the pre_build phase...
       - echo DeploymentBucket is $DeploymentBucket
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
