@@ -20,9 +20,9 @@ phases:
       - echo "{\"URL\"zz \"${snykurl}\"}" | sed "s/zz/:/g" > payload.json
       # - echo "{\"URL\": \"${snykurl}\"}" > payload.json
       - cat payload.json
-      - base64 payload.json
+      - export payload=$(base64 payload.json)
       - echo $LambdaName
-      - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json)  response.json
+      - aws lambda invoke --function-name ${LambdaName} --payload ${payload}  response.json
       - echo DeploymentBucket is $DeploymentBucket
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}')  --repository $(echo $CodeArtifactRepository | awk -F'/' '{print $3}') --format maven --query 'repositoryEndpoint' --output text)
