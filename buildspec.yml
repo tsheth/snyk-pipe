@@ -11,7 +11,7 @@ phases:
       - snyk config set api=$SnykToken
       - aws --version
       # - pip3 install awscli --upgrade --user | grep awscli
-  snyk_test:
+  pre_build:
     commands:
       # - snyk monitor --all-projects
       - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
@@ -20,15 +20,11 @@ phases:
       # - echo "{\"URL\": \"${snykurl}\"}" > payload.json
       - snyk test --all-projects || echo vulnerabilities found
       - echo Snyk test completed on `date`
-  trigger_lambda:
-    commands:
       - cat payload.json
       - export payload=$(base64 payload.json)
       - echo $LambdaName
       # - aws lambda invoke --function-name ${LambdaName} --payload ${payload}  response.json
       - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json | awk '{print}' ORS='')  response.json
-  pre_build:
-    commands:
       - echo Entered the pre_build phase...
       - echo DeploymentBucket is $DeploymentBucket
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
