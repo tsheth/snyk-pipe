@@ -46,5 +46,4 @@ Report will be available in target/surefire-reports
 
 ## Synk Test
 
-	mvn snyk:test  // to test only console report generate
-	mvn snyk:monitor // to get report in Synk account and send to your email id
+ <Identify the scanning technique>
