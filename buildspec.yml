@@ -9,31 +9,22 @@ phases:
       - npm install -g snyk > /dev/null
       - apt-get install -y maven > /dev/null
       - snyk config set api=$SnykToken
-      - aws --version
-      # - pip3 install awscli --upgrade --user | grep awscli
   pre_build:
     commands:
-      # - snyk monitor --all-projects
+      - echo Entered the pre_build phase...
       - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
-      # - echo $snykurl | sed "s/ /\n/g" > payload.json
       - echo "{\"URL\"zz \"${snykurl}\"}" | sed "s/zz/:/g" > payload.json
-      # - echo "{\"URL\": \"${snykurl}\"}" > payload.json
       - snyk test --all-projects || echo vulnerabilities found
       - echo Snyk test completed on `date`
       - cat payload.json
-      - export payload=$(base64 payload.json)
-      - echo $LambdaName
-      # - aws lambda invoke --function-name ${LambdaName} --payload ${payload}  response.json
-      - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json -w 10000)  response.json
-      - echo $SNSTopicArn
-      - aws sns publish --topic-arn ${SNSTopicArn} --subject "Snyk Dashboard URL" --message ${snykurl}
-      - echo Entered the pre_build phase...
-      - echo DeploymentBucket is $DeploymentBucket
+      # - echo $LambdaName
+      # - aws lambda invoke --function-name ${LambdaName} --payload $(base64 payload.json -w 10000)  response.json
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}')  --repository $(echo $CodeArtifactRepository | awk -F'/' '{print $3}') --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}') --query authorizationToken --output text`
-      # - echo "CODEARTIFACT_TOKEN is $CODEARTIFACT_TOKEN"
+      - echo $SNSTopicArn
+      - aws sns publish --topic-arn ${SNSTopicArn} --subject "Snyk Dashboard URL" --message ${snykurl}
   build:
     commands:
       - echo Entered the build phase...
@@ -42,11 +33,10 @@ phases:
   post_build:
     commands:
       - echo Entered the post_build phase...
-      # - cp payload.json ./target/
       - echo Build completed on `date`
 artifacts:  
   files:  
-    - target/*
+    # - target/*
     - payload.json
 
 
