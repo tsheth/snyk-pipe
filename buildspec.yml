@@ -18,9 +18,9 @@ phases:
       - echo Snyk test completed on `date`
       - cat payload.json
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
-      - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}')  --repository $(echo $CodeArtifactRepository | awk -F'/' '{print $3}') --format maven --query 'repositoryEndpoint' --output text)
+      - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
-      - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $(echo $CodeArtifactRepository | awk -F'/' '{print $2}') --query authorizationToken --output text`
+      - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $CodeArtifactDomain --query authorizationToken --output text`
       - echo $SNSTopicArn
       - aws sns publish --topic-arn ${SNSTopicArn} --subject "Snyk Dashboard URL" --message ${snykurl}
   build:
@@ -36,7 +36,4 @@ artifacts:
   files:  
     # - target/*
     - payload.json
-
-
-
 
