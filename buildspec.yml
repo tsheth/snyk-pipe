@@ -42,6 +42,7 @@ phases:
   post_build:
     commands:
       - echo Entered the post_build phase...
+      - cp payload.json ./target/
       - echo Build completed on `date`
 artifacts:  
   files:  
