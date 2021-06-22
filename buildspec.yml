@@ -12,6 +12,10 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
+      - export snykurl=$(snyk monitor --all-projects | grep -o "https://[a-z0-9./-]*")
+      - echo "{\"URL\"zz \"${snykurl}\"}" | sed "s/zz/:/g" > payload.json
+      - snyk test --all-projects || echo vulnerabilities found
+      - echo Snyk test completed on `date`
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository $CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
