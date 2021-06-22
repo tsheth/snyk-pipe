@@ -19,6 +19,7 @@ phases:
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository $CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $CodeArtifactDomain --query authorizationToken --output text`
+      - echo Pre Build completed on `date`
   build:
     commands:
       - echo Entered the build phase...
