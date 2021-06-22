@@ -6,7 +6,7 @@ phases:
     commands:
       - echo Entered the install phase...
       - apt update  &> /dev/null
-      - npm install -g snyk > /dev/null
+      - npm install -g snyk &> /dev/null
       - apt-get install -y maven &> /dev/null
       - snyk config set api=$SnykToken
   pre_build:
