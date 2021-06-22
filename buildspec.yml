@@ -13,7 +13,7 @@ phases:
     commands:
       - echo Entered the pre_build phase...
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
-      - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
+      - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository $CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain $CodeArtifactDomain --query authorizationToken --output text`
       - echo $SNSTopicArn
