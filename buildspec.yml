@@ -12,6 +12,8 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
+      - snyk monitor --all-projects 
+      - echo Snyk test completed on `date`      
       - echo "CodeArtifactRepository is $CodeArtifactRepository"
       - export CODEARTIFACT_URL=$(aws codeartifact get-repository-endpoint --domain $CodeArtifactDomain  --repository $CodeArtifactRepository --format maven --query 'repositoryEndpoint' --output text)
       - echo "CODEARTIFACT_URL is $CODEARTIFACT_URL"
